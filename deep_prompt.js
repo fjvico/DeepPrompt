@@ -403,7 +403,7 @@
         bookLink.rel = 'noopener noreferrer';
         bookLink.textContent = 'book';
         supportLine.appendChild(bookLink);
-        supportLine.append('...');
+        supportLine.append(' ❤️');
         panelDropdown.appendChild(supportLine);
 
         panelShadow.appendChild(panelStyle);
