@@ -4,6 +4,7 @@
 // @version      0.0
 // @description  Icono junto al botón "Share" de DeepSeek para marcar qué system prompt(s) añadir al primer mensaje de cada conversación nueva
 // @author       Francisco Vico
+// @license      GPL-3.0
 // @homepageURL   https://fjvico.github.io
 // @supportURL    mailto:fjvico@uma.es
 // @match        https://chat.deepseek.com/*
