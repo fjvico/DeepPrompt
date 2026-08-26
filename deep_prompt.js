@@ -1,9 +1,12 @@
 // ==UserScript==
-// @name         DeepSeek - Inyectar System Prompt(s)
+// @name         DeepPrompt
 // @namespace    http://tampermonkey.net/
-// @version      3.0
+// @version      0.0
 // @description  Icono junto al botón "Share" de DeepSeek para marcar qué system prompt(s) añadir al primer mensaje de cada conversación nueva
 // @author       Francisco Vico
+// @homepageURL   https://fjvico.github.io
+// @supportURL    mailto:fjvico@uma.es
+// @contributionURL https://www.amazon.es/-/en/Cartas-Alias-pr%C3%B3ximo-inicio-sesi%C3%B3n-ebook/dp/B0GQJMRJ48
 // @match        https://chat.deepseek.com/*
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -237,6 +240,9 @@
     const FALLBACK_TOP = '12px';
     const FALLBACK_RIGHT = '64px'; // separación desde el borde derecho, para no pisar el icono "Share"
 
+    // Debe coincidir con @contributionURL de la cabecera de metadatos
+    const CONTRIBUTION_URL = 'https://www.amazon.es/-/en/Cartas-Alias-pr%C3%B3ximo-inicio-sesi%C3%B3n-ebook/dp/B0GQJMRJ48';
+
     const HOST_ID = 'ds-sysprompt-host';
     const PANEL_ID = 'ds-sysprompt-panel-host';
     let hostEl = null;      // icono, se inserta dentro de la barra junto a "Share"
@@ -343,6 +349,20 @@
                 font-size: 11px;
                 color: #999;
             }
+            .support-line {
+                margin-top: 6px;
+                padding-top: 6px;
+                border-top: 1px solid #444;
+                font-size: 11px;
+                color: #999;
+            }
+            .support-line a {
+                color: #7aa2ff;
+                text-decoration: none;
+            }
+            .support-line a:hover {
+                text-decoration: underline;
+            }
         `;
 
         panelDropdown = document.createElement('div');
@@ -373,6 +393,18 @@
         note.className = 'empty-note';
         note.textContent = 'Si no marcas ninguno, no se añade nada.';
         panelDropdown.appendChild(note);
+
+        const supportLine = document.createElement('div');
+        supportLine.className = 'support-line';
+        supportLine.append('Buy me a ');
+        const bookLink = document.createElement('a');
+        bookLink.href = CONTRIBUTION_URL;
+        bookLink.target = '_blank';
+        bookLink.rel = 'noopener noreferrer';
+        bookLink.textContent = 'book';
+        supportLine.appendChild(bookLink);
+        supportLine.append('...');
+        panelDropdown.appendChild(supportLine);
 
         panelShadow.appendChild(panelStyle);
         panelShadow.appendChild(panelDropdown);
