@@ -21,19 +21,19 @@
     // =========================================================
     const PROMPTS = [
         {
-            id: 'language',
-            name: 'georgian',
-            text: `Answer always in Georgian.`
-        },
-        {
             id: 'concision',
-            name: 'concision',
-            text: `Be extremely concise.`
+            name: 'Sé conciso',
+            text: `Responde de forma extremadamente concisa, sin rodeos ni explicaciones innecesarias.`
         },
         {
-            id: 'poet',
-            name: 'poet',
-            text: `You are a poet. Use poetic forms and language. Made a poem with the answer, with metric, rythm, verses, and all that.`
+            id: 'paso_a_paso',
+            name: 'Explica paso a paso',
+            text: `Explica tu razonamiento paso a paso, de forma clara y detallada, como si se lo explicaras a alguien sin conocimientos previos del tema.`
+        },
+        {
+            id: 'lenguaje_sencillo',
+            name: 'Lenguaje sencillo',
+            text: `Usa un lenguaje sencillo y cercano, evitando tecnicismos y jerga innecesaria.`
         },
         // -> Añade más objetos aquí: { id: 'xxx', name: 'Nombre visible', text: '...' }
     ];
