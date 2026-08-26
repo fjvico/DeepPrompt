@@ -6,12 +6,13 @@
 // @author       Francisco Vico
 // @homepageURL   https://fjvico.github.io
 // @supportURL    mailto:fjvico@uma.es
-// @contributionURL https://www.amazon.es/-/en/Cartas-Alias-pr%C3%B3ximo-inicio-sesi%C3%B3n-ebook/dp/B0GQJMRJ48
 // @match        https://chat.deepseek.com/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @run-at       document-idle
 // ==/UserScript==
+
+// Apoya este script: https://www.amazon.es/-/en/Cartas-Alias-pr%C3%B3ximo-inicio-sesi%C3%B3n-ebook/dp/B0GQJMRJ48
 
 (function () {
     'use strict';
@@ -142,16 +143,16 @@
         const removedIds = lastInjectedIds.filter(id => !currentIds.includes(id));
         console.log('[DeepSeek SystemPrompt] addedIds=', addedIds, 'removedIds=', removedIds);
 
-        // Bloque con los prompts actualmente activos (todos, no solo los nuevos)
+        // Bloque con los prompts recién activados (solo lo nuevo, no todo lo que ya estaba activo)
         let block = '';
-        if (currentIds.length > 0) {
-            block = PROMPTS.filter(p => currentIds.includes(p.id)).map(p => p.text).join(PROMPT_JOIN);
+        if (addedIds.length > 0) {
+            block = PROMPTS.filter(p => addedIds.includes(p.id)).map(p => p.text).join(PROMPT_JOIN);
         }
         // Bloque "Forget about: ..." con los que se acaban de desactivar
         if (removedIds.length > 0) {
             const removedText = PROMPTS.filter(p => removedIds.includes(p.id)).map(p => p.text).join(PROMPT_JOIN);
             if (block) block += ' ';
-            block += `IMPORTANT! The following instructions has been revoked, ONLY in what concerns them, reset to your default response from here: ${removedText}`;
+            block += `IMPORTANTE: las siguientes instrucciones han sido revocadas, retoma tu respuesta por defecto a partir de aquí (sólo en lo que respecta a ellas): ${removedText}`;
         }
         console.log('[DeepSeek SystemPrompt] Bloque a insertar:', JSON.stringify(block));
 
@@ -201,13 +202,23 @@
     );
 
     // Al cambiar de conversación (nueva URL), olvidamos lo aplicado hasta
-    // ahora: en el chat nuevo, la primera vez que haya algo marcado se
-    // considerará un cambio y se inyectará.
+    // ahora — pero SOLO si de verdad es una conversación nueva (sin mensajes
+    // todavía). Muchos sitios cambian la URL justo después del primer envío
+    // (para asignarle un ID real a la conversación) sin que sea una
+    // conversación distinta; en ese caso NO hay que resetear.
     let lastUrl = location.href;
     setInterval(() => {
         if (location.href !== lastUrl) {
             lastUrl = location.href;
-            lastInjectedIds = [];
+            const bubbles = document.querySelectorAll(
+                '[class*="message"], [data-testid*="message"], [class*="chat-message"]'
+            );
+            if (bubbles.length === 0) {
+                lastInjectedIds = [];
+                console.log('[DeepSeek SystemPrompt] Nueva conversación detectada, se reinicia el registro.');
+            } else {
+                console.log('[DeepSeek SystemPrompt] Cambio de URL sin conversación nueva (ya hay mensajes), no se reinicia.');
+            }
         }
     }, 500);
 
